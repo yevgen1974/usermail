@@ -7,7 +7,8 @@ protected $layout = "layouts.default";
 
   public function __construct() {
              
-       $this->beforeFilter('csrf', array('on'=>'post'));
+        $this->beforeFilter('csrf', array('on'=>'post'));
+        $this->beforeFilter('auth', array('only'=>array('getProfile')));
   
         }
 
@@ -43,15 +44,22 @@ public function getForgot() {
                         $user->firstname = Input::get('firstname');
                         $user->lastname = Input::get('lastname');
                         $user->email = Input::get('email');
-                        $user->password = Hash::make(Input::get('password'));
+                        $user->password =  Crypt::encrypt(Input::get('password'));
+                        $activatedCode = sha1(mt_rand(10000,99999).time());
+                        $user->activation_code = $activatedCode;
                         $user->save();
-                        $activatedCode = sha1(mt_rand(10000.99999).time());
+                        $password=Input::get('password');
+                        $email=Input::get('email');
+                        $firstname = Input::get('firstname');
+                        $lastname = Input::get('lastname');
                         $data = array(
                             'password' => $password,
-                            'authCode' => $activatedCode
+                            'authCode' => $activatedCode,
+                            'firstname' => $firstname,
+                            'lastname' => $lastname
                             );
 
-                        Mail::send('activation.template', $data, function ($message) use ($email) {
+                        Mail::send('emails.auth.activation', $data, function ($message) use ($email) {
                         $message->subject('Account Activation');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 
@@ -71,6 +79,7 @@ public function getForgot() {
                 $this->layout->content = View::make('users.login');
         }
 
+          
 
         public function postLogin() {
                 if (Auth::attempt(array('username'=>Input::get('username'), 'password'=>Input::get('password')))) {
@@ -88,19 +97,20 @@ public function getForgot() {
                $email= Input::get('email');
                $user = new User;
                if ($user->findEmail($email)==true) {
-                     $password = $user->where('email', '=', $email)->first();
+                     $password = $user->where('email', '=', $email)->first()->password;
+                     $decrypted_password =Crypt::decrypt($password);
                         $data = array(
-                            'password' => $password);
+                            'password' => $decrypted_password);
 
-                        Mail::send('forgot.template', $data, function ($message) use ($email) {
-                        $message->subject('Account Activated');
+                        Mail::send('emails.auth.forgot', $data, function ($message) use ($email) {
+                        $message->subject('Forgot Password');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 
                    
                         });
 
 
-                        return Redirect::to('users/forgot')->with('message', 'The password was sent you by email');
+                        return Redirect::to('users/forgot_sent')->with('message', 'The password was sent you by email');
                 } else {
                         return Redirect::to('users/login')
                                ->with('message', 'You are not registered at us, sorry')
@@ -109,6 +119,11 @@ public function getForgot() {
 
         }
 
+
+
+      public function getForgotSent() {
+                $this->layout->content = View::make('users.forgot_sent');
+        }
 
 
        public function getActivated () {
@@ -121,7 +136,7 @@ public function getForgot() {
                          $data = array(
                             'username' => $username);
 
-                        Mail::send('activation.template', $data, function ($message) use ($email) {
+                        Mail::send('emails.auth.activatied', $data, function ($message) use ($email) {
                         $message->subject('Account Activation');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 

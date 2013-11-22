@@ -17,6 +17,9 @@
 //});
 
 Route::controller('users', 'UsersController');
+Route::get('users/forgot', array('as' => 'users.forgot', 'uses' => 'App\Controllers\UsersController@forgot'));
+Route::get('users/forgot_sent', array('as' => 'users.forgot_sent', 'uses' => 'App\Controllers\UsersController@forgot_sent'));
+Route::get('users/login', array('as' => 'users.login', 'uses' => 'App\Controllers\UsersController@login'));
 
 //Route::get('register', 'UsersController@register');
 //Route::get('home', 'UsersController@home');

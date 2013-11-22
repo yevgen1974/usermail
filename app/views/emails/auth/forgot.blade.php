@@ -1,7 +1,7 @@
 Hello, 
 
 
-The password for your account is {{ $password }}
+The password for your account is: {{ $password }}
 
 
 Thank you,
