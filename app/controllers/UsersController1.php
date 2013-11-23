@@ -76,44 +76,6 @@ public function getForgot() {
                 }
         }
 
-
-public function postResetPassword() {
-                $validator = Validator::make(Input::all(), User::$rules);
-
-                if ($validator->passes()) {
-                        $user = new User;
-                        $user->email = Input::get('email');
-                        $random_str1 = sha1(mt_rand(10000,99999).time());
-                        $password=Input::get('password');
-                        $random_str2=substr(md5(strrev($activatedCode)),-3);
-                        $user->password = Crypt::encrypt($password.$random_str2);
-                        $username = $user->where('email', '=', $email)->first()->username;
-                        $user->save(); 
-                        $data = array(
-                            'username' => $username,
-                            'password' => $password
-                            );
-
-                        Mail::send('emails.auth.password', $data, function ($message) use ($email) {
-                        $message->subject('Password was reset');
-                        $message->from('noreply@sendme.com', 'Admin');
-                        $message->to($email); 
-                   
-                        });
-
-                        return Redirect::to('users/login')->with('message', 'Your password was changed');
-                     }
-
-                else {
-                       
-                       return Redirect::to('users/register')->with('message', 'The following errors occurred')->withErrors($validator)->withInput();
-                }
-        }
-
-
-
-
-
         public function getLogin() {
                 $this->layout->content = View::make('users.login');
         }
@@ -132,29 +94,24 @@ public function postResetPassword() {
 
 
 
-
-        public function getReset() {
-                $this->layout->content = View::make('users.reset');
-        }
-
-
-
         public function postForgot() {
                $email= Input::get('email');
                $user = new User;
                if ($user->findEmail($email)==true) {
-                 $username = $user->where('email', '=', $email)->first()->username;
+                     $password = $user->where('email', '=', $email)->first()->password;
+                     $decrypted_password =Crypt::decrypt($password);
                         $data = array(
-                            'username' => $username);
+                            'password' => $decrypted_password);
 
-                        Mail::send('emails.auth.password_reset', $data, function ($message) use ($email) {
-                        $message->subject('Reset Password');
+                        Mail::send('emails.auth.forgot', $data, function ($message) use ($email) {
+                        $message->subject('Forgot Password');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 
                    
                         });
 
-                        return Redirect::to('users/forgot')->with('message', 'The password was sent you by email');
+
+                        return Redirect::to('users/forgot_sent')->with('message', 'The password was sent you by email');
                 } else {
                         return Redirect::to('users/login')
                                ->with('message', 'You are not registered at us, sorry')
@@ -165,18 +122,19 @@ public function postResetPassword() {
 
 
 
-       public function getForgotSent() {
+      public function getForgotSent() {
                 $this->layout->content = View::make('users.forgot_sent');
         }
 
 
        public function getActivated () {
+
                         $code= Input::get('code');
+                        $email= Input::get('email');
                         $user = new User;
-                        if ($user->where('code', '=', $code)->first()->count()==true) {
-                        $username = $user->where('code', '=', $code)->first()->username;
-                        $user->update(array('activated' => 1)); 
-                        $data = array(
+                        if ($user->where('code', '=', $code)->first()->count()==1) {
+                        $username = $user->where('email', '=', $email)->first();
+                         $data = array(
                             'username' => $username);
 
                         Mail::send('emails.auth.activatied', $data, function ($message) use ($email) {

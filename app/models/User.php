@@ -72,6 +72,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 
 
+   public function changePassword($email,$password) {
+
+  
+     $this->where('email', '=', $email)->update(array('password' => $password));
+
+
+  }
+
+
    public function findUsername($username) {
 
     
