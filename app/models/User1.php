@@ -123,6 +123,36 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    } 
 
 
+
+  	/**
+	 * Login the  user via username and password
+	 *
+	 * @return  void
+	 */
+
+
+     public function loginUser($username, $password) {
+
+     if ($this->where('username', '=', $username)->or_where('password', '=', $password)->count()==1)){
+
+       return true;
+
+          }
+
+         else 
+
+    	return false;
+
+       } 
+
+
+
+
+   } 
+
+
+ 
+
 	/**
 	 * Get the password for the user.
 	 *

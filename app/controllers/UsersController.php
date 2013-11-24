@@ -47,8 +47,9 @@ public function getForgot() {
                         $activatedCode = sha1(mt_rand(10000,99999).time());
                         $user->activation_code = $activatedCode;
                         $password=Input::get('password');
-                        $random_str=substr(md5(strrev($activatedCode)),-3);
-                        $user->password = Crypt::encrypt($password.$random_str);
+                        $salt=md5(strrev($activatedCode));
+                        $user->salt = $salt;
+                        $user->password = Hash::make(Input::get('password'));
                         $user->save(); 
                         $email=Input::get('email');
                         $firstname = Input::get('firstname');
@@ -85,8 +86,9 @@ public function postResetPassword() {
                         $user->email = Input::get('email');
                         $random_str1 = sha1(mt_rand(10000,99999).time());
                         $password=Input::get('password');
-                        $random_str2=substr(md5(strrev($activatedCode)),-3);
-                        $user->password = Crypt::encrypt($password.$random_str2);
+                        $salt=md5(strrev($activatedCode));
+                        $user->salt = $salt;
+                        $user->password = Crypt::encrypt($password);
                         $username = $user->where('email', '=', $email)->first()->username;
                         $user->save(); 
                         $data = array(
@@ -173,8 +175,8 @@ public function postResetPassword() {
        public function getActivated () {
                         $code= Input::get('code');
                         $user = new User;
-                        if ($user->where('code', '=', $code)->first()->count()==true) {
-                        $username = $user->where('code', '=', $code)->first()->username;
+                        if ($user->where('activation_code', '=', $code)->count()==true) {
+                        $username = $user->where('activation_code', '=', $code)->first()->username;
                         $user->update(array('activated' => 1)); 
                         $data = array(
                             'username' => $username);

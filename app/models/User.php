@@ -41,6 +41,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
    
+
 	/**
 	 * Get the email of user.
 	 *
@@ -69,6 +70,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 
 
+    /**
+	 * Reset password of user
+	 *
+	 * @return void 
+	 */
+
 
 
 
@@ -79,6 +86,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 
   }
+
+
+
+    /**
+	 * Get the username 
+	 *
+	 * @return boolean
+	 */
+
+
 
 
    public function findUsername($username) {
@@ -111,11 +128,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->password;
 	}
 
+
 	/**
 	 * Get the e-mail address where password reminders are sent.
 	 *
 	 * @return string
 	 */
+	
 	public function getReminderEmail()
 	{
 		return $this->email;
