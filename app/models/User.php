@@ -41,6 +41,47 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
    
+   	/**
+	 * Make the full name of user from the first name and last name string.
+	 *
+	 * @return string
+	 */
+
+   public function FullName() {
+
+   return $this->first_name . ' ' . $this->last_name;     
+
+
+   } 
+
+
+	/**
+	 * Get the activation code for the new user.
+	 *
+	 * @return boolean
+	 */
+
+   public function findActivationCode($code) {
+
+
+     if  ($this->where('activation_code', '=', $code)->first()->count()==1) {
+
+      return true;
+
+          }
+
+    else  {
+
+
+    	return false;
+
+           } 
+
+
+   } 
+
+
+   
 
 	/**
 	 * Get the email of user.
@@ -53,14 +94,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    public function findEmail($email) {
 
     
-     if  ($this->where('email', '=', $email)->count()==1) {
+     if  ($this->where('email', '=', $email)->first()->count()==1) {
 
       return true;
 
-         } 
+          }
 
-
-         else {
+         else  {
 
     	return false;
 
@@ -69,54 +109,50 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    } 
 
 
-
-    /**
-	 * Reset password of user
+ 
+	/**
+	 * Get the username of user.
 	 *
-	 * @return void 
+	 * @return  mixed
 	 */
 
 
+     public function findUsername($username) {
 
-
-   public function changePassword($email,$password) {
-
-  
-     $this->where('email', '=', $email)->update(array('password' => $password));
-
-
-  }
-
-
-
-    /**
-	 * Get the username 
-	 *
-	 * @return boolean
-	 */
-
-
-
-
-   public function findUsername($username) {
-
-    
-     if  ($this->where('username', '=', $username)->count()==1) {
-
-      return true;
-
-         } 
-
-
-         else {
-
-    	return false;
-
-           } 
+     return $this->where('username', '=', $username)->first();
 
    } 
 
-   
+
+
+  	/**
+	 * Login the  user via username and password
+	 *
+	 * @return  void
+	 */
+
+
+     public function loginUser($username, $password) {
+
+     if ($this->where('username', '=', $username)->or_where('password', '=', $password)->or_where(array('activated' => 1))->count()==1) {
+
+       return true;
+
+          }
+
+         else {
+
+     return false;
+
+       } 
+
+
+
+
+   } 
+
+
+ 
 
 	/**
 	 * Get the password for the user.
@@ -128,13 +164,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->password;
 	}
 
-
 	/**
 	 * Get the e-mail address where password reminders are sent.
 	 *
 	 * @return string
 	 */
-	
 	public function getReminderEmail()
 	{
 		return $this->email;

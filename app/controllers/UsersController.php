@@ -14,11 +14,11 @@ protected $layout = "layouts.default";
 
 
 
-public function getHome()
+public function getIndex()
 {
 
-  $this->layout->content = View::make('users.login');
-	
+  $this->layout->content = View::make('users.index');
+
 }
 
 public function getRegister() {
@@ -124,8 +124,12 @@ public function postResetPassword() {
 
         public function postLogin() {
                 if (Auth::attempt(array('username'=>Input::get('username'), 'password'=>Input::get('password')))) {
+                         
                         return Redirect::to('users/profile')->with('message', 'You are now logged in!');
                 } else {
+                        $ip= $_SERVER['REMOTE_ADDR'];
+                        $browser=$_SERVER['HTTP_USER_AGENT'];
+                        Attempt::addLogin($ip, $browser);  
                         return Redirect::to('users/login')
                                 ->with('message', 'Your username/password  incorrect, please, try again')
                                 ->withInput();
@@ -156,7 +160,7 @@ public function postResetPassword() {
                    
                         });
 
-                        return Redirect::to('users/forgot')->with('message', 'The password was sent you by email');
+                        return Redirect::to('users/forgot_sent')->with('message', 'The password was sent you by email');
                 } else {
                         return Redirect::to('users/login')
                                ->with('message', 'You are not registered at us, sorry')
@@ -185,6 +189,7 @@ public function postResetPassword() {
                         $message->subject('Account Activation');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 
+                           return Redirect::to('users/login')->with('message', 'Your account was just activated');
                    
                         });
 

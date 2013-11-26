@@ -11,15 +11,10 @@
 |
 */
 
-//Route::get('/', function()
-//{
-	//return View::make('hello');
-//});
-
 Route::controller('users', 'UsersController');
-Route::get('users/forgot', array('as' => 'users.forgot', 'uses' => 'App\Controllers\UsersController@forgot'));
-Route::get('users/forgot_sent', array('as' => 'users.forgot_sent', 'uses' => 'App\Controllers\UsersController@forgot_sent'));
-Route::get('users/login', array('as' => 'users.login', 'uses' => 'App\Controllers\UsersController@login'));
-
-//Route::get('register', 'UsersController@register');
-//Route::get('home', 'UsersController@home');
+Route::get('users/forgot', array('as' => 'forgot', 'uses' => 'App\Controllers\UsersController@forgot'));
+Route::get('users/forgot_sent', array('as' => 'forgot_sent', 'uses' => 'App\Controllers\UsersController@forgot_sent'));
+Route::get('users/login', array('as' => 'login', 'uses' => 'App\Controllers\UsersController@login'));
+Route::get('users/index', array('as' => 'index', 'uses' => 'App\Controllers\UsersController@index'));
+Route::get('logout', array('as' => 'logout', function () { }))->before('auth');
+Route::get('profile', array('as' => 'profile', function () { }))->before('auth');

@@ -49,7 +49,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
    public function FullName() {
 
-   //return $this->first_name . ' '  $this->last_name;     
+   return $this->first_name . ' ' . $this->last_name;     
 
 
    } 
@@ -99,11 +99,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
           }
 
-         else 
+         else {
 
     	return false;
 
-           } 
+          } 
 
    } 
 
@@ -133,7 +133,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
      public function loginUser($username, $password) {
 
-     if ($this->where('username', '=', $username)->or_where('password', '=', $password)->count()==1)){
+     if ($this->where('username', '=', $username)->or_where('password', '=', $password)->or_where(array('activated' => 1))->count()==1)){
 
        return true;
 
@@ -141,7 +141,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
          else 
 
-    	return false;
+     return false;
 
        } 
 
