@@ -9,6 +9,9 @@
          <li>{{ $error }}</li>
       @endforeach
    </ul>
+
+
+
     <br> 
    {{ Form::text('username', null, array('placeholder'=>'UserName')) }}
    <br> 
@@ -27,7 +30,7 @@
     <br> 
    {{ Form::password('password_confirmation', array('placeholder'=>'Confirm Password')) }}
  <br> 
-  <br> 
+
    {{ Form::submit('Register')}}
 {{ Form::close() }}
 

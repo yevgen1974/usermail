@@ -15,8 +15,12 @@
     <div class="navbar navbar-inverse navbar-fixed-top">
             <div class="navbar-inner">
              <ul class="nav">
-                <li>{{ HTML::link('users/index', 'Home') }}</li>
+              @if (!Auth::check())
+                <li>{{ HTML::link('users/login', 'Home') }}</li>
                 <li>{{ HTML::link('users/register', 'Register') }}</li>
+                @else 
+             <li>{{ HTML::link('users/logout', 'Logout') }}</li>
+                @endif
             </ul>
         </div>
 

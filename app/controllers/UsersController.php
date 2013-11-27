@@ -14,7 +14,7 @@ protected $layout = "layouts.default";
 
 
 
-public function getIndex()
+public function get_index()
 {
 
   $this->layout->content = View::make('users.index');
@@ -33,6 +33,12 @@ public function getForgot() {
 }
 
 
+public function __call ($method, $parameters) {
+
+ return Response::error('404');
+
+}
+
 
 
  public function postCreate() {
@@ -44,11 +50,12 @@ public function getForgot() {
                         $user->firstname = Input::get('firstname');
                         $user->lastname = Input::get('lastname');
                         $user->email = Input::get('email');
+                        $user->profile_id = $user->id;
                         $activatedCode = sha1(mt_rand(10000,99999).time());
                         $user->activation_code = $activatedCode;
                         $password=Input::get('password');
-                        $salt=md5(strrev($activatedCode));
-                        $user->salt = $salt;
+                       // $salt=md5(strrev($activatedCode));
+                       // $user->salt = $salt;
                         $user->password = Hash::make(Input::get('password'));
                         $user->save(); 
                         $email=Input::get('email');
@@ -123,7 +130,7 @@ public function postResetPassword() {
           
 
 
-          
+
 
         public function postLogin() {
                 if (Auth::attempt(array('username'=>Input::get('username'), 'password'=>Input::get('password')))) {
@@ -219,7 +226,9 @@ public function postResetPassword() {
 
 
         public function getProfile() {
-                $this->layout->content = View::make('users.profile');
+                $username=Auth::user->username;
+                $user=$user->findUsername($username); 
+                $this->layout->content = View::make('users.profile')-with('user',$user);
         }
 
 
