@@ -122,6 +122,9 @@ public function postResetPassword() {
 
           
 
+
+          
+
         public function postLogin() {
                 if (Auth::attempt(array('username'=>Input::get('username'), 'password'=>Input::get('password')))) {
                          
@@ -139,9 +142,15 @@ public function postResetPassword() {
 
 
 
+
+
+
         public function getReset() {
                 $this->layout->content = View::make('users.reset');
         }
+
+
+
 
 
 
