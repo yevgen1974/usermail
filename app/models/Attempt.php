@@ -14,8 +14,8 @@ class Attempt extends Eloquent  {
 	 */
 	protected $table = 'attempts';
 	protected $fillable = array('ip','user_agent', 'attempts');
-
-
+    pivate const TIMES = 3;
+   
 
    	/**
 	 * Detects the login attempts times.
@@ -25,9 +25,9 @@ class Attempt extends Eloquent  {
 
    public function loginDetect($ip,$browser) {
 
-    $attempts=$this->where('ip', '=', $ip)->or_where('attempts', '=>',3)->or_where('user_agent', '=',$browser)->first()->count()==1) { 
+    $attempts=$this->where('ip', '=', $ip)->or_where('attempts', '=>',TIMES)->or_where('user_agent', '=',$browser)->first()->count()==1) { 
 
-   if($attempts==3) {
+   if($attempts=>TIMES) {
 
     return true;
 
@@ -52,7 +52,6 @@ public function addLogin($ip,$browser) {
 
 	$this->ip=$ip;
 	$this->user_agent=$browser;
-	$this->attempts=1;
 	$this->save();
 
 

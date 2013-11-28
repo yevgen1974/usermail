@@ -56,15 +56,16 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 
 	/**
-	 * Get the activation code for the new user.
+	 * Get the activation code of the new user.
 	 *
 	 * @return boolean
 	 */
 
-   public function findActivationCode($code) {
+   public function getActivation($code) {
 
 
      if  ($this->where('activation_code', '=', $code)->first()->count()==1) {
+     	 $this->update(array('activated' => 1)); 
 
       return true;
 
@@ -115,13 +116,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
     
      if  ($this->where('email', '=', $email)->first()->count()==1) {
 
-      return true;
+         return true;
 
           }
 
          else  {
 
-    	return false;
+    	     return false;
 
            } 
 

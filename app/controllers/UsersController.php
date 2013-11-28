@@ -14,7 +14,7 @@ protected $layout = "layouts.default";
 
 
 
-public function get_index()
+public function getIndex()
 {
 
   $this->layout->content = View::make('users.index');
@@ -95,7 +95,7 @@ public function postResetPassword() {
                         $password=Input::get('password');
                         $salt=md5(strrev($activatedCode));
                         $user->salt = $salt;
-                        $user->password = Crypt::encrypt($password);
+                        $user->password = Hash::make($password);
                         $username = $user->where('email', '=', $email)->first()->username;
                         $user->save(); 
                         $data = array(
@@ -165,7 +165,7 @@ public function postResetPassword() {
                $email= Input::get('email');
                $user = new User;
                if ($user->findEmail($email)==true) {
-                 $username = $user->where('email', '=', $email)->first()->username;
+                   $username = $user->where('email', '=', $email)->first()->username;
                         $data = array(
                             'username' => $username);
 
@@ -192,12 +192,14 @@ public function postResetPassword() {
         }
 
 
+
+
+
        public function getActivated () {
-                        $code= Input::get('code');
+                        $code= Input::get('activation_code');
                         $user = new User;
-                        if ($user->where('activation_code', '=', $code)->count()==true) {
+                        if (getActivation($code)==true) {
                         $username = $user->where('activation_code', '=', $code)->first()->username;
-                        $user->update(array('activated' => 1)); 
                         $data = array(
                             'username' => $username);
 

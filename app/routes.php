@@ -17,6 +17,7 @@ Route::get('users/forgot_sent', array('as' => 'forgot_sent', 'uses' => 'App\Cont
 Route::get('users/login', array('as' => 'home', 'uses' => 'App\Controllers\UsersController@login'));
 Route::get('users/logout', array('as' => 'logout','uses' => 'App\Controllers\UsersController@logout'));
 Route::get('users/profile', array('as' => 'profile', 'uses' => 'App\Controllers\UsersController@profile'));
+Route::get('users/active', array('as' => 'activate', 'uses' => 'App\Controllers\UsersController@active'));
 Route::get('users/captcha', function()
 {
  $captcha = new Captcha;
