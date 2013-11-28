@@ -25,7 +25,7 @@ class Attempt extends Eloquent  {
 
    public function loginDetect($ip,$browser) {
 
-    $attempts=$this->where('ip', '=', $ip)->or_where('attempts', '=>',TIMES)->or_where('user_agent', '=',$browser)->first()->count()==1) { 
+    $attempts=$this->where('ip', '=', $ip)->where('attempts', '=>',TIMES)->where('user_agent', '=',$browser)->count()) { 
 
    if($attempts=>TIMES) {
 

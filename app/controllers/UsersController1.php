@@ -1,6 +1,6 @@
 <?php
 
-class UsersController extends BaseController {
+class Users1Controller extends BaseController {
 
 public $restful = true;
 protected $layout = "layouts.default";

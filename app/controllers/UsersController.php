@@ -56,7 +56,7 @@ public function __call ($method, $parameters) {
                         $password=Input::get('password');
                        // $salt=md5(strrev($activatedCode));
                        // $user->salt = $salt;
-                        $user->password = Hash::make(Input::get('password'));
+                        $user->password = Hash::make($password);
                         $user->save(); 
                         $email=Input::get('email');
                         $firstname = Input::get('firstname');
@@ -137,12 +137,19 @@ public function postResetPassword() {
                          
                         return Redirect::to('users/profile')->with('message', 'You are now logged in!');
                 } else {
+
+                    echo Input::get('username');
+                    die(Input::get('password'));
+
+      /*              
                         $ip= $_SERVER['REMOTE_ADDR'];
                         $browser=$_SERVER['HTTP_USER_AGENT'];
                         Attempt::addLogin($ip, $browser);  
                         return Redirect::to('users/login')
                                 ->with('message', 'Your username/password  incorrect, please, try again')
-                                ->withInput();
+                                ->withInput(); */
+
+
                 }
         }
 
@@ -195,6 +202,39 @@ public function postResetPassword() {
 
 
 
+
+       public function getActive () {
+                        $code= Input::get('activation_code');
+                        $user = new User;
+                        if (getActivation($code)==true) {
+                        $username = $user->where('activation_code', '=', $code)->first()->username;
+                        $data = array(
+                            'username' => $username);
+
+                        Mail::send('emails.auth.activatiedk', $data, function ($message) use ($email) {
+                        $message->subject('Account Activation');
+                        $message->from('noreply@sendme.com', 'Admin');
+                        $message->to($email); 
+                           return Redirect::to('users/login')->with('message', 'Your account was just activated');
+                   
+                        });
+
+                        }
+
+                            else {
+
+                           return Redirect::to('/')
+                               ->with('message', 'The entered code is not valid, sorry')
+                               ->withInput();
+
+                        }
+
+
+       }
+
+
+
+
        public function getActivated () {
                         $code= Input::get('activation_code');
                         $user = new User;
@@ -228,7 +268,8 @@ public function postResetPassword() {
 
 
         public function getProfile() {
-                $username=Auth::user->username;
+                $username=Auth::user()->username;
+                $user = new User;
                 $user=$user->findUsername($username); 
                 $this->layout->content = View::make('users.profile')-with('user',$user);
         }
