@@ -41,27 +41,28 @@ public function __call ($method, $parameters) {
 
 
 
+
+
  public function postCreate() {
                 $validator = Validator::make(Input::all(), User::$rules);
 
                 if ($validator->passes()) {
-                        $user = new User;
-                        $user->username = Input::get('username');
-                        $user->firstname = Input::get('firstname');
-                        $user->lastname = Input::get('lastname');
-                        $user->email = Input::get('email');
-                        $user->profile_id = $user->id;
-                        $activatedCode = sha1(mt_rand(10000,99999).time());
-                        $user->activation_code = $activatedCode;
-                        $password=Input::get('password');
-                       // $salt=md5(strrev($activatedCode));
-                       // $user->salt = $salt;
-                        $user->password = Hash::make($password);
-                        $user->save(); 
-                        $email=Input::get('email');
-                        $firstname = Input::get('firstname');
-                        $lastname = Input::get('lastname');
-                        $data = array(
+                         $user = new User;
+                         $profile = new Profile;
+                         $profile->save();
+                         $user->username = Input::get('username');
+                         $user->firstname = Input::get('firstname');
+                         $user->lastname = Input::get('lastname');
+                         $user->email = Input::get('email');
+                         $activatedCode = sha1(mt_rand(10000,99999).time());
+                         $user->activation_code = $activatedCode;
+                         $password=Input::get('password');
+                         $user->password = Hash::make($password);
+                         $user->save(); 
+                         $email=Input::get('email');
+                         $firstname = Input::get('firstname');
+                         $lastname = Input::get('lastname');
+                         $data = array(
                             'password' => $password,
                             'authCode' => $activatedCode,
                             'firstname' => $firstname,
@@ -133,21 +134,20 @@ public function postResetPassword() {
 
 
         public function postLogin() {
-                if (Auth::attempt(array('username'=>Input::get('username'), 'password'=>Input::get('password')))) {
-                         
-                        return Redirect::to('users/profile')->with('message', 'You are now logged in!');
-                } else {
 
-                    echo Input::get('username');
-                    die(Input::get('password'));
-
-      /*              
+                        $attempt = new Attempt;
                         $ip= $_SERVER['REMOTE_ADDR'];
                         $browser=$_SERVER['HTTP_USER_AGENT'];
-                        Attempt::addLogin($ip, $browser);  
+                        $attempt->addLogin($ip, $browser); 
+                       if ($attempt->loginDetect($ip,$browser)==true) {
+                        Auth::attempt(array('username'=>Input::get('username'), 'password'=>Input::get('password')));
+                        return Redirect::to('users/profile')->with('message', 'You are now logged in!');
+                } else {
+                      
+                        $attempt->addLogin($ip, $browser);  
                         return Redirect::to('users/login')
                                 ->with('message', 'Your username/password  incorrect, please, try again')
-                                ->withInput(); */
+                                ->withInput(); 
 
 
                 }
@@ -203,42 +203,10 @@ public function postResetPassword() {
 
 
 
-       public function getActive () {
-                        $code= Input::get('activation_code');
-                        $user = new User;
-                        if (getActivation($code)==true) {
-                        $username = $user->where('activation_code', '=', $code)->first()->username;
-                        $data = array(
-                            'username' => $username);
-
-                        Mail::send('emails.auth.activatiedk', $data, function ($message) use ($email) {
-                        $message->subject('Account Activation');
-                        $message->from('noreply@sendme.com', 'Admin');
-                        $message->to($email); 
-                           return Redirect::to('users/login')->with('message', 'Your account was just activated');
-                   
-                        });
-
-                        }
-
-                            else {
-
-                           return Redirect::to('/')
-                               ->with('message', 'The entered code is not valid, sorry')
-                               ->withInput();
-
-                        }
-
-
-       }
-
-
-
-
        public function getActivated () {
                         $code= Input::get('activation_code');
                         $user = new User;
-                        if (getActivation($code)==true) {
+                        if ($user->getActivation($code)==true) {
                         $username = $user->where('activation_code', '=', $code)->first()->username;
                         $data = array(
                             'username' => $username);
@@ -268,10 +236,10 @@ public function postResetPassword() {
 
 
         public function getProfile() {
-                $username=Auth::user()->username;
-                $user = new User;
-                $user=$user->findUsername($username); 
-                $this->layout->content = View::make('users.profile')-with('user',$user);
+               // $username=Session::get('ses_username');
+              //  $user = new User;
+               // $usr=$user->findUsername($username); 
+                $this->layout->content = View::make('users.profile');//-with('username',$username);
         }
 
 

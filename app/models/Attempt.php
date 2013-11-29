@@ -12,9 +12,9 @@ class Attempt extends Eloquent  {
 	 *
 	 * @var string
 	 */
-	protected $table = 'attempts';
+	protected $table = 'attemps';
 	protected $fillable = array('ip','user_agent', 'attempts');
-    pivate const TIMES = 3;
+
    
 
    	/**
@@ -25,15 +25,24 @@ class Attempt extends Eloquent  {
 
    public function loginDetect($ip,$browser) {
 
-    $attempts=$this->where('ip', '=', $ip)->where('attempts', '=>',TIMES)->where('user_agent', '=',$browser)->count()) { 
+    $attempts=$this->select(DB::raw('count(attempts) as attempt_count'))->where('ip', '=', $ip)->where('user_agent', '=',$browser)->count();
 
-   if($attempts=>TIMES) {
+   if($attempts >= 5) {
+
+   	$this->update(array('login_ok' => 1)); 
+    $this->update(array('login_failed' => 0)); 
+    $this->update(array('attempts' => 0));
 
     return true;
+
 
      }  
         else {
 
+      $this->update(array('login_ok' => 0)); 
+      $this->update(array('login_failed' => 1)); 
+
+    
            return false;
 
         }
@@ -53,6 +62,9 @@ public function addLogin($ip,$browser) {
 	$this->ip=$ip;
 	$this->user_agent=$browser;
 	$this->save();
+
+
+  }
 
 
 }

@@ -4,24 +4,6 @@
 <br>
 
 
-@if($user) {
-	
-@foreach ($user as $us)
-
-{{ $us->first_name; }}
-
-{{ $us->last_name; }}
-
-
-{{ $us->emai; }}
-
-
-@endforeach
-
-}
-@endif
-
-
 
 
 

@@ -64,7 +64,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    public function getActivation($code) {
 
 
-     if  ($this->where('activation_code', '=', $code)->first()->count()==1) {
+     if  ($this->where('activation_code', '=', $code)->count()==1) {
      	 $this->update(array('activated' => 1)); 
 
       return true;
