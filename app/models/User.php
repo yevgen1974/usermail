@@ -145,6 +145,22 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 
 
+   /**
+	 * Get the ID of user.
+	 *
+	 * @return  mixed
+	 */
+
+
+     public function findUserID($id) {
+
+     return $this->where('id', '=', $id)->first();
+
+   } 
+
+
+
+
   	/**
 	 * Login the  user via username and password
 	 *
@@ -154,7 +170,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
      public function loginUser($username, $password) {
 
-     if ($this->where('username', '=', $username)->or_where('password', '=', $password)->or_where(array('activated' => 1))->count()==1) {
+     if ($this->where('username', '=', $username)->where('password', '=', $password)->where(array('activated' => 1))->count()) {
 
        return true;
 

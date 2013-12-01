@@ -31,7 +31,7 @@
    {{ Form::password('password_confirmation', array('placeholder'=>'Confirm Password')) }}
  <br> 
 
-   {{ Form::submit('Register')}}
+   {{ Form::submit('Register')}} {{ Form::submit('Reset')}}
 {{ Form::close() }}
 
 

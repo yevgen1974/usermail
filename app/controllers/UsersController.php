@@ -45,6 +45,11 @@ public function __call ($method, $parameters) {
 
  public function postCreate() {
                 $validator = Validator::make(Input::all(), User::$rules);
+               
+               if(!$validator->passes())
+                      {
+                      return Redirect::to('users.reset'); 
+                      }
 
                 if ($validator->passes()) {
                          $user = new User;
@@ -159,11 +164,9 @@ public function postResetPassword() {
 
 
 
-        public function getReset() {
-                $this->layout->content = View::make('users.reset');
+        public function getReset($token) {
+                $this->layout->content = View::make('users.reset')->with('token', $token);
         }
-
-
 
 
 
@@ -235,11 +238,40 @@ public function postResetPassword() {
  
 
 
+   public function getUpdate($id) {
+ 
+     $user =  User::find($id);
+     $user->firstname = Input::get('firstname');
+     $user->lastname = Input::get('lastname');
+     $user->username = Input::get('username');
+     $user->password = Input::get('password');
+     $user->email = Input::get('email');
+     $user->save();
+
+   }
+
+
+
+public function getEdit($id){
+
+ return \View::make (users.edit)->with('user', User::find($id));
+
+}
+
+
+public function getShow($id){
+
+ return \View::make (users.show)->with('user', User::find($id));
+
+}
+
+
+
         public function getProfile() {
-               // $username=Session::get('ses_username');
-              //  $user = new User;
-               // $usr=$user->findUsername($username); 
-                $this->layout->content = View::make('users.profile');//-with('username',$username);
+                $uid=Auth::user()->id;
+                $user = new User;
+                $usr=$user->findUserID($uid); 
+                $this->layout->content = View::make('users.profile')->with('usr',$usr);
         }
 
 
