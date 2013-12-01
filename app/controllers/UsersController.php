@@ -7,7 +7,7 @@ protected $layout = "layouts.default";
 
   public function __construct() {
              
-        $this->beforeFilter('csrf', array('on'=>'post'));
+        //$this->beforeFilter('csrf', array('on'=>'post'));
         $this->beforeFilter('auth', array('only'=>array('getProfile')));
   
         }
@@ -240,11 +240,11 @@ public function postResetPassword() {
 
    public function getUpdate($id) {
  
-     $user =  User::find($id);
+     $user = User::find($id);
      $user->firstname = Input::get('firstname');
      $user->lastname = Input::get('lastname');
      $user->username = Input::get('username');
-     $user->password = Input::get('password');
+     $user->password = Hash::make(Input::get('password'));
      $user->email = Input::get('email');
      $user->save();
 
@@ -253,15 +253,16 @@ public function postResetPassword() {
 
 
 public function getEdit($id){
-
- return \View::make (users.edit)->with('user', User::find($id));
+  $user = new User;
+  $user =$user->findUserID($id); 
+ return \View::make ('users.edit')->with('user',$user);
 
 }
 
 
 public function getShow($id){
 
- return \View::make (users.show)->with('user', User::find($id));
+ return \View::make ('users.show')->with('user', User::find($id));
 
 }
 

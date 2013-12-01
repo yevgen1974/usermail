@@ -27,11 +27,16 @@ class Attempt extends Eloquent  {
 
     $attempts=$this->select(DB::raw('count(attempts) as attempt_count'))->where('ip', '=', $ip)->where('user_agent', '=',$browser)->count();
 
-   if($attempts >= 5) {
+   if($attempts >=1 or $attempts >= 5 ) {
 
    	$this->update(array('login_ok' => 1)); 
-    $this->update(array('login_failed' => 0)); 
-    $this->update(array('attempts' => 0));
+    $this->update(array('login_failed' => 0));
+    $i=0; 
+    $this->update(array('attempts' => $i++)); 
+    if ($i==5) {
+    break;
+    $this->update(array('attempts' => 0)); 
+     }
 
     return true;
 
