@@ -54,6 +54,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
    } 
 
+   public function profile() {
+
+   return $this->has_one('Profile');
+
+   }
+
 
 	/**
 	 * Get the activation code of the new user.
@@ -144,6 +150,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
    } 
 
 
+
+
+  
+	/**
+	 * Get the get of user info.
+	 *
+	 * @return  mixed
+	 */
+
+
+     public function findUser($email) {
+
+     return $this->where('email', '=', $email)->first();
+
+   } 
+
+
+  
 
    /**
 	 * Get the ID of user.

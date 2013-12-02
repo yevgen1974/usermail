@@ -36,6 +36,7 @@ class Attempt extends Eloquent  {
     if ($i==5) {
     break;
     $this->update(array('attempts' => 0)); 
+    
      }
 
     return true;

@@ -1,0 +1,2 @@
+@layout("default")
+@section("content")

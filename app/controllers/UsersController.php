@@ -91,16 +91,28 @@ public function __call ($method, $parameters) {
         }
 
 
-public function postResetPassword() {
-                $validator = Validator::make(Input::all(), User::$rules);
+public function getReset() {
+         $this->layout->content = View::make('users.reset');
+        }
+
+
+
+
+
+
+public function postPassword() {
+
+$rules = array(
+'email' =>'required|between:3,64|Email',
+'password' =>'Required|AlphaNum|Between:4,8|Confirmed',
+'password_confirmation' =>'Required|AlphaNum|Between:4,8');
+
+                $validator = Validator::make(Input::all(), $rules);
 
                 if ($validator->passes()) {
-                        $user = new User;
-                        $user->email = Input::get('email');
-                        $random_str1 = sha1(mt_rand(10000,99999).time());
+                        $email = Input::get('email');
                         $password=Input::get('password');
-                        $salt=md5(strrev($activatedCode));
-                        $user->salt = $salt;
+                        $user= User::where('email', '=', $email)->first();
                         $user->password = Hash::make($password);
                         $username = $user->where('email', '=', $email)->first()->username;
                         $user->save(); 
@@ -110,7 +122,7 @@ public function postResetPassword() {
                             );
 
                         Mail::send('emails.auth.password', $data, function ($message) use ($email) {
-                        $message->subject('Password was reset');
+                        $message->subject('Password was just reset');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 
                    
@@ -121,9 +133,10 @@ public function postResetPassword() {
 
                 else {
                        
-                       return Redirect::to('users/register')->with('message', 'The following errors occurred')->withErrors($validator)->withInput();
+                       return Redirect::to('users/reset')->with('message', 'The following errors occurred')->withErrors($validator)->withInput();
                 }
         }
+
 
 
 
@@ -163,14 +176,6 @@ public function postResetPassword() {
 
 
 
-
-        public function getReset($token) {
-                $this->layout->content = View::make('users.reset')->with('token', $token);
-        }
-
-
-
-
         public function postForgot() {
                $email= Input::get('email');
                $user = new User;
@@ -186,7 +191,7 @@ public function postResetPassword() {
                    
                         });
 
-                        return Redirect::to('users/forgot_sent')->with('message', 'The password was sent you by email');
+                        return Redirect::to('users/forgot')->with('message', 'The link to reset password was sent you by email');
                 } else {
                         return Redirect::to('users/login')
                                ->with('message', 'You are not registered at us, sorry')
@@ -197,18 +202,12 @@ public function postResetPassword() {
 
 
 
-       public function getForgotSent() {
-                $this->layout->content = View::make('users.forgot_sent');
-        }
-
-
-
 
 
 
        public function getActivated () {
                         $code= Input::get('activation_code');
-                        $user = new User;
+                        $user = User;
                         if ($user->getActivation($code)==true) {
                         $username = $user->where('activation_code', '=', $code)->first()->username;
                         $data = array(
@@ -218,13 +217,13 @@ public function postResetPassword() {
                         $message->subject('Account Activation');
                         $message->from('noreply@sendme.com', 'Admin');
                         $message->to($email); 
-                           return Redirect::to('users/login')->with('message', 'Your account was just activated');
+                        return Redirect::to('users/login')->with('message', 'Your account was just activated');
                    
                         });
 
                         }
 
-                            else {
+                           else {
 
                            return Redirect::to('/')
                                ->with('message', 'The entered code is not valid, sorry')
@@ -240,7 +239,8 @@ public function postResetPassword() {
 
    public function getUpdate($id) {
  
-     $user = User::find($id);
+     echo var_dump($id);
+     $user = User::find(intval($id));
      $user->firstname = Input::get('firstname');
      $user->lastname = Input::get('lastname');
      $user->username = Input::get('username');
@@ -253,18 +253,19 @@ public function postResetPassword() {
 
 
 public function getEdit($id){
-  $user = new User;
-  $user =$user->findUserID($id); 
- return \View::make ('users.edit')->with('user',$user);
+    echo var_dump($id);
+    $user = new User;
+    $user =$user->findUserID($id); 
+    return \View::make ('users.edit')->with('user',$user);
 
-}
+   }
 
 
-public function getShow($id){
+    public function getShow($id){
 
- return \View::make ('users.show')->with('user', User::find($id));
+     return \View::make ('users.show')->with('user', User::find($id));
 
-}
+    }
 
 
 
