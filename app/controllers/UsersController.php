@@ -253,9 +253,7 @@ $rules = array(
 
 
 public function getEdit($id){
-    echo var_dump($id);
-    $user = new User;
-    $user =$user->findUserID($id); 
+    $user =User::find($id); 
     return \View::make ('users.edit')->with('user',$user);
 
    }

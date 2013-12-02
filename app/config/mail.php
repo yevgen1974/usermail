@@ -6,7 +6,7 @@ return array(
 'host' => 'smtp.gmail.com',
 'port' => 465,
 'encryption' => 'ssl',
-'username' => 'evgenmask19@gmail.com',
-'password' => 'ghfdldf;bpyb19'
+'username' => '2323232@gmail.com',
+'password' => 'fdfdfdf'
 
 );
