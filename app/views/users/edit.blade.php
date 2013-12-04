@@ -3,6 +3,7 @@
       <br> 
  
 <form name="edit" action="users/update/{{$user->id}}" method="get">
+  
 Username: <input type="text" name="username" value="{{$user->username}}" >
 <br>
 First Name: <input type="text" name="firstname" value="{{$user->firstname}}" >

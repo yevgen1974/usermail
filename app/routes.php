@@ -18,8 +18,9 @@ Route::get('users/reset', array('as' => 'reset', 'uses' => 'App\Controllers\User
 Route::get('users/login', array('as' => 'home', 'uses' => 'App\Controllers\UsersController@login'));
 Route::get('users/logout', array('as' => 'logout','uses' => 'App\Controllers\UsersController@logout'));
 Route::get('users/profile', array('as' => 'profile', 'uses' => 'App\Controllers\UsersController@profile'));
-Route::get('users/activated', array('as' => 'activated', 'uses' => 'App\Controllers\UsersController@activated'));
+Route::get('users/activated', array('as' => 'activated', 'uses' => 'App\Controllers\UsersController@getActivated'));
 Route::get('users/edit', array('as' => 'edit', 'uses' => 'App\Controllers\UsersController@edit'));
+Route::get('users/update', array('as' => 'update', 'uses' => 'App\Controllers\UsersController@update'));
 Route::get('users/captcha', function()
 {
  $captcha = new Captcha;

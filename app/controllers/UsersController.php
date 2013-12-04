@@ -7,7 +7,7 @@ protected $layout = "layouts.default";
 
   public function __construct() {
              
-        //$this->beforeFilter('csrf', array('on'=>'post'));
+        $this->beforeFilter('csrf', array('on'=>'post'));
         $this->beforeFilter('auth', array('only'=>array('getProfile')));
   
         }
@@ -17,7 +17,9 @@ protected $layout = "layouts.default";
 public function getIndex()
 {
 
-  $this->layout->content = View::make('users.index');
+
+  $user = User::find(3)->with('profile');
+  $this->layout->content = View::make('users.index')->with('user', $user);
 
 }
 
@@ -44,6 +46,7 @@ public function __call ($method, $parameters) {
 
 
  public function postCreate() {
+
                 $validator = Validator::make(Input::all(), User::$rules);
                
                if(!$validator->passes())
@@ -52,9 +55,8 @@ public function __call ($method, $parameters) {
                       }
 
                 if ($validator->passes()) {
+
                          $user = new User;
-                         $profile = new Profile;
-                         $profile->save();
                          $user->username = Input::get('username');
                          $user->firstname = Input::get('firstname');
                          $user->lastname = Input::get('lastname');
@@ -64,6 +66,10 @@ public function __call ($method, $parameters) {
                          $password=Input::get('password');
                          $user->password = Hash::make($password);
                          $user->save(); 
+                         $insertedId = $user->id;
+                        // $profile = new Profile;
+                        // $profile->user_id =$insertedId
+                        // $profile->save();
                          $email=Input::get('email');
                          $firstname = Input::get('firstname');
                          $lastname = Input::get('lastname');
@@ -89,12 +95,6 @@ public function __call ($method, $parameters) {
                        return Redirect::to('users/register')->with('message', 'The following errors occurred')->withErrors($validator)->withInput();
                 }
         }
-
-
-public function getReset() {
-         $this->layout->content = View::make('users.reset');
-        }
-
 
 
 
@@ -143,6 +143,7 @@ $rules = array(
 
 
         public function getLogin() {
+
                 $this->layout->content = View::make('users.login');
         }
 
@@ -177,6 +178,7 @@ $rules = array(
 
 
         public function postForgot() {
+
                $email= Input::get('email');
                $user = new User;
                if ($user->findEmail($email)==true) {
@@ -206,8 +208,10 @@ $rules = array(
 
 
        public function getActivated () {
+
                         $code= Input::get('activation_code');
-                        $user = User;
+                        $user = new User;
+                         echo var_dump($code);
                         if ($user->getActivation($code)==true) {
                         $username = $user->where('activation_code', '=', $code)->first()->username;
                         $data = array(
@@ -225,7 +229,7 @@ $rules = array(
 
                            else {
 
-                           return Redirect::to('/')
+                           return Redirect::to('users/login')
                                ->with('message', 'The entered code is not valid, sorry')
                                ->withInput();
 
@@ -239,8 +243,8 @@ $rules = array(
 
    public function getUpdate($id) {
  
-     echo var_dump($id);
-     $user = User::find(intval($id));
+    
+     $user = User::find($id);
      $user->firstname = Input::get('firstname');
      $user->lastname = Input::get('lastname');
      $user->username = Input::get('username');
@@ -252,7 +256,8 @@ $rules = array(
 
 
 
-public function getEdit($id){
+   public function getEdit($id){
+
     $user =User::find($id); 
     return \View::make ('users.edit')->with('user',$user);
 
@@ -269,8 +274,7 @@ public function getEdit($id){
 
         public function getProfile() {
                 $uid=Auth::user()->id;
-                $user = new User;
-                $usr=$user->findUserID($uid); 
+                $usr =User::find($uid); 
                 $this->layout->content = View::make('users.profile')->with('usr',$usr);
         }
 
