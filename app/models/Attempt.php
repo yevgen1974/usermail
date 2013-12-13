@@ -33,10 +33,12 @@ class Attempt extends Eloquent  {
     $this->update(array('login_failed' => 0));
     $i=0; 
     $this->update(array('attempts' => $i++)); 
+
     if ($i==5) {
     break;
-    $this->update(array('attempts' => 0)); 
     
+    $this->update(array('attempts' => 0)); 
+
      }
 
     return true;

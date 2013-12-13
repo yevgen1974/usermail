@@ -95,6 +95,7 @@ return array(
 		'Illuminate\Html\HtmlServiceProvider',
 		'Illuminate\Foundation\Providers\KeyGeneratorServiceProvider',
 		'Illuminate\Log\LogServiceProvider',
+		'Jenssegers\Mongodb\MongodbServiceProvider',
 		'Illuminate\Mail\MailServiceProvider',
 		'Illuminate\Foundation\Providers\MaintenanceServiceProvider',
 		'Illuminate\Database\MigrationServiceProvider',

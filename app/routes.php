@@ -21,6 +21,13 @@ Route::get('users/profile', array('as' => 'profile', 'uses' => 'App\Controllers\
 Route::get('users/activated', array('as' => 'activated', 'uses' => 'App\Controllers\UsersController@getActivated'));
 Route::get('users/edit', array('as' => 'edit', 'uses' => 'App\Controllers\UsersController@edit'));
 Route::get('users/update', array('as' => 'update', 'uses' => 'App\Controllers\UsersController@update'));
+Route::controller('networks', 'NetworksController');
+Route::get('networks/index', array('as' => 'index','uses' => 'App\Controllers\NetworksController@getIndex'));
+
+
+
+
+
 Route::get('users/captcha', function()
 {
  $captcha = new Captcha;

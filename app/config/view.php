@@ -12,8 +12,11 @@ return array(
 	| the usual Laravel view path has already been registered for you.
 	|
 	*/
+       
 
-	'paths' => array(__DIR__.'/../views'),
+  'paths' => array(__DIR__.'/../../public/', __DIR__.'/../views'),
+
+  'paths' => array(public_path(), __DIR__.'/../views'),
 
 	/*
 	|--------------------------------------------------------------------------

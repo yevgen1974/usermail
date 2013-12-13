@@ -26,7 +26,8 @@ return array(
 	|
 	*/
 
-	'default' => 'mysql',
+	//'default' => 'mysql',
+	'default' => 'mongodb',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -62,6 +63,20 @@ return array(
 			'collation' => 'utf8_unicode_ci',
 			'prefix'    => '',
 		),
+
+
+
+
+
+    'mongodb' => array(
+            'driver'   => 'mongodb',
+             'host'     => 'localhost',
+             'port'     => 27017,
+             'username' => 'admin',
+             'password' => '123',
+             'database' => 'networks'
+),
+
 
 		'pgsql' => array(
 			'driver'   => 'pgsql',
